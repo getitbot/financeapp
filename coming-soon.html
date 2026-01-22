@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon | Finance Buddha</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #2563EB;
+            --secondary: #1E293B;
+            --accent: #F59E0B;
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --text-dark: #0F172A;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            background-color: #F8FAFC;
+        }
+
+        /* --- 1. CANVAS BACKGROUND --- */
+        #network-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.6;
+        }
+
+        /* --- 2. GLASSMORPHISM CARD WITH 3D TILT --- */
+        .tilt-card-container {
+            perspective: 1000px;
+            z-index: 10;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 
+                0 20px 40px -5px rgba(0, 0, 0, 0.1), 
+                0 10px 10px -5px rgba(0, 0, 0, 0.04),
+                inset 0 0 0 1px rgba(255,255,255,0.5);
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out; /* Smooth movement handled by JS */
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Holographic Shine Effect */
+        .glass-panel::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.1) 30%,
+                rgba(255, 255, 255, 0.4) 50%,
+                rgba(255, 255, 255, 0.1) 70%,
+                transparent 100%
+            );
+            transform: rotate(30deg) translateY(100%);
+            transition: transform 0.5s;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .glass-panel:hover::after {
+            opacity: 1;
+            transform: rotate(30deg) translateY(-100%);
+            transition: transform 1.5s ease-in-out;
+        }
+
+        /* --- 3. COUNTDOWN TIMER STYLES --- */
+        .countdown-box {
+            background: linear-gradient(145deg, #ffffff, #f0f4f8);
+            box-shadow: 
+                5px 5px 10px #d1d9e6, 
+                -5px -5px 10px #ffffff;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .countdown-number {
+            background: linear-gradient(135deg, #2563EB, #1D4ED8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* --- 4. FORM ELEMENTS --- */
+        .input-premium {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid transparent;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .input-premium:focus {
+            background: #fff;
+            border-color: #2563EB;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+            outline: none;
+        }
+
+        .btn-notify {
+            background: linear-gradient(135deg, #2563EB 0%, #1e40af 100%);
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .btn-notify::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background: #1e40af;
+            transition: width 0.3s ease;
+            z-index: -1;
+        }
+
+        .btn-notify:hover::before {
+            width: 100%;
+        }
+
+        /* --- 5. UTILITY ANIMATIONS --- */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .animate-float-delayed {
+            animation: float 7s ease-in-out infinite;
+            animation-delay: 2s;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Blur Blobs */
+        .blob-bg {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col relative selection:bg-blue-500 selection:text-white">
+
+    <canvas id="network-canvas"></canvas>
+
+    <div class="blob-bg w-96 h-96 bg-blue-300 top-0 left-0 animate-float"></div>
+    <div class="blob-bg w-96 h-96 bg-purple-300 bottom-0 right-0 animate-float-delayed"></div>
+
+    <header class="w-full z-40 fixed top-0 left-0">
+        <div class="container mx-auto px-6 h-24 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-3 group relative z-50">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-blue-400 flex items-center justify-center text-white shadow-lg shadow-blue-500/30 group-hover:rotate-12 transition-transform duration-300">
+                    <i class="fa-solid fa-sack-dollar text-2xl"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-2xl font-bold text-slate-900 tracking-tight leading-none group-hover:text-blue-600 transition-colors">Finance<span class="font-light text-slate-500">Buddha</span></span>
+                </div>
+            </a>
+            <a href="index.html" class="hidden md:flex items-center gap-2 px-6 py-2 rounded-full border border-slate-200 bg-white/50 backdrop-blur-sm text-sm font-semibold text-slate-600 hover:bg-white hover:text-blue-600 transition-all shadow-sm hover:shadow-md z-50">
+                <i class="fa-solid fa-arrow-left"></i> Back to Home
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center relative z-20 px-6 py-32">
+        
+        <div class="tilt-card-container w-full max-w-5xl">
+            <div id="tilt-card" class="glass-panel rounded-[2.5rem] p-8 md:p-16 text-center transform transition-all">
+                
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-xs font-bold uppercase tracking-widest mb-8 animate-pulse">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                    </span>
+                    Under Construction
+                </div>
+
+                <h1 class="text-5xl md:text-7xl font-extrabold text-slate-900 mb-6 tracking-tight leading-tight">
+                    We are building <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">Something Extraordinary.</span>
+                </h1>
+
+                <p class="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto mb-12 leading-relaxed">
+                    The Finance Buddha team is crafting a new feature to revolutionize how you manage loans and investments. Get ready for the next level of financial intelligence.
+                </p>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-3xl mx-auto mb-16" id="countdown">
+                    <div class="countdown-box p-4 md:p-6 flex flex-col items-center justify-center group hover:-translate-y-2 transition-transform duration-300">
+                        <span class="countdown-number text-4xl md:text-5xl font-bold mb-1" id="days">00</span>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Days</span>
+                    </div>
+                    <div class="countdown-box p-4 md:p-6 flex flex-col items-center justify-center group hover:-translate-y-2 transition-transform duration-300 delay-75">
+                        <span class="countdown-number text-4xl md:text-5xl font-bold mb-1" id="hours">00</span>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Hours</span>
+                    </div>
+                    <div class="countdown-box p-4 md:p-6 flex flex-col items-center justify-center group hover:-translate-y-2 transition-transform duration-300 delay-100">
+                        <span class="countdown-number text-4xl md:text-5xl font-bold mb-1" id="minutes">00</span>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Minutes</span>
+                    </div>
+                    <div class="countdown-box p-4 md:p-6 flex flex-col items-center justify-center group hover:-translate-y-2 transition-transform duration-300 delay-150">
+                        <span class="countdown-number text-4xl md:text-5xl font-bold mb-1" id="seconds">00</span>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Seconds</span>
+                    </div>
+                </div>
+
+                <div class="max-w-md mx-auto relative z-30">
+                    <p class="text-slate-600 font-medium mb-4">Be the first to know when we launch:</p>
+                    <form id="notifyForm" class="flex flex-col sm:flex-row gap-3">
+                        <div class="flex-grow relative">
+                            <i class="fa-regular fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input type="email" required placeholder="Enter your email address" class="input-premium w-full pl-12 pr-4 py-4 rounded-xl text-slate-800 placeholder-slate-400">
+                        </div>
+                        <button type="submit" class="btn-notify px-8 py-4 rounded-xl text-white font-bold shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all transform active:scale-95 flex items-center justify-center gap-2">
+                            <span>Notify Me</span>
+                            <i class="fa-solid fa-bell"></i>
+                        </button>
+                    </form>
+                    <p class="text-xs text-slate-400 mt-3 flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-lock text-xs"></i> No spam. Unsubscribe anytime.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 p-3 bg-white/80 backdrop-blur-md rounded-full border border-white/50 shadow-xl z-50 animate-float-delayed">
+            <a href="#" class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all duration-300 hover:scale-110">
+                <i class="fa-brands fa-twitter"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-blue-800 hover:text-white transition-all duration-300 hover:scale-110">
+                <i class="fa-brands fa-linkedin-in"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-pink-600 hover:text-white transition-all duration-300 hover:scale-110">
+                <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="mailto:support@financebuddha.com" class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-green-600 hover:text-white transition-all duration-300 hover:scale-110">
+                <i class="fa-regular fa-envelope"></i>
+            </a>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+
+    <script>
+        /* =========================================
+           1. PARTICLE NETWORK ANIMATION (CANVAS)
+           ========================================= */
+        const canvas = document.getElementById('network-canvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray;
+
+        // Set canvas size
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Mouse interaction object
+        let mouse = {
+            x: null,
+            y: null,
+            radius: (canvas.height / 80) * (canvas.width / 80)
+        };
+
+        window.addEventListener('mousemove', function(event) {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+
+        // Particle Class
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x;
+                this.y = y;
+                this.directionX = directionX;
+                this.directionY = directionY;
+                this.size = size;
+                this.color = color;
+            }
+
+            // Method to draw individual particle
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = '#94a3b8'; // Slate-400
+                ctx.fill();
+            }
+
+            // Update particle position
+            update() {
+                // Check if particle is within canvas bounds
+                if (this.x > canvas.width || this.x < 0) {
+                    this.directionX = -this.directionX;
+                }
+                if (this.y > canvas.height || this.y < 0) {
+                    this.directionY = -this.directionY;
+                }
+
+                // Check collision detection - mouse position / particle position
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < mouse.radius + this.size) {
+                    if (mouse.x < this.x && this.x < canvas.width - this.size * 10) {
+                        this.x += 10;
+                    }
+                    if (mouse.x > this.x && this.x > this.size * 10) {
+                        this.x -= 10;
+                    }
+                    if (mouse.y < this.y && this.y < canvas.height - this.size * 10) {
+                        this.y += 10;
+                    }
+                    if (mouse.y > this.y && this.y > this.size * 10) {
+                        this.y -= 10;
+                    }
+                }
+                
+                // Move particle
+                this.x += this.directionX;
+                this.y += this.directionY;
+                
+                // Draw particle
+                this.draw();
+            }
+        }
+
+        // Initialize particles
+        function init() {
+            particlesArray = [];
+            // Number of particles based on screen area
+            let numberOfParticles = (canvas.height * canvas.width) / 9000;
+            
+            for (let i = 0; i < numberOfParticles; i++) {
+                let size = (Math.random() * 2) + 1;
+                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                let directionX = (Math.random() * 1) - 0.5; // Speed
+                let directionY = (Math.random() * 1) - 0.5;
+                let color = '#94a3b8';
+
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+            }
+        }
+
+        // Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+            }
+            connect();
+        }
+
+        // Draw lines between particles if close enough
+        function connect() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) + 
+                                   ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                    
+                    if (distance < (canvas.width / 7) * (canvas.height / 7)) {
+                        opacityValue = 1 - (distance / 20000);
+                        ctx.strokeStyle = 'rgba(37, 99, 235,' + opacityValue + ')'; // Brand Blue lines
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        // Handle Window Resize
+        window.addEventListener('resize', function() {
+            canvas.width = innerWidth;
+            canvas.height = innerHeight;
+            mouse.radius = ((canvas.height / 80) * (canvas.height / 80));
+            init();
+        });
+
+        // Mouse out logic
+        window.addEventListener('mouseout', function() {
+            mouse.x = undefined;
+            mouse.y = undefined;
+        });
+
+        // Start Canvas
+        init();
+        animate();
+
+
+        /* =========================================
+           2. 3D TILT EFFECT LOGIC
+           ========================================= */
+        const card = document.getElementById('tilt-card');
+        const container = document.querySelector('.tilt-card-container');
+
+        container.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+            
+            // Limit the rotation
+            const clampX = Math.max(-10, Math.min(10, xAxis));
+            const clampY = Math.max(-10, Math.min(10, yAxis));
+
+            card.style.transform = `rotateY(${clampX}deg) rotateX(${clampY}deg)`;
+        });
+
+        // Animate In/Out (Reset on mouse leave)
+        container.addEventListener('mouseenter', (e) => {
+            card.style.transition = 'none'; // Remove transition for instant follow
+        });
+
+        container.addEventListener('mouseleave', (e) => {
+            card.style.transition = 'all 0.5s ease'; // Smooth reset
+            card.style.transform = `rotateY(0deg) rotateX(0deg)`;
+        });
+
+
+        /* =========================================
+           3. COUNTDOWN TIMER LOGIC
+           ========================================= */
+        // Set launch date to 14 days from now
+        const launchDate = new Date();
+        launchDate.setDate(launchDate.getDate() + 14); 
+
+        function updateCountdown() {
+            const currentTime = new Date();
+            const diff = launchDate - currentTime;
+
+            if (diff <= 0) {
+                // Timer finished
+                document.getElementById('days').innerText = "00";
+                document.getElementById('hours').innerText = "00";
+                document.getElementById('minutes').innerText = "00";
+                document.getElementById('seconds').innerText = "00";
+                return;
+            }
+
+            const d = Math.floor(diff / 1000 / 60 / 60 / 24);
+            const h = Math.floor(diff / 1000 / 60 / 60) % 24;
+            const m = Math.floor(diff / 1000 / 60) % 60;
+            const s = Math.floor(diff / 1000) % 60;
+
+            document.getElementById('days').innerText = d < 10 ? '0' + d : d;
+            document.getElementById('hours').innerText = h < 10 ? '0' + h : h;
+            document.getElementById('minutes').innerText = m < 10 ? '0' + m : m;
+            document.getElementById('seconds').innerText = s < 10 ? '0' + s : s;
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown(); // Run immediately
+
+
+        /* =========================================
+           4. FORM HANDLER
+           ========================================= */
+        document.getElementById('notifyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerHTML;
+            
+            // Change button state
+            btn.innerHTML = '<div class="spinner"></div>';
+            btn.disabled = true;
+
+            // Simulate API call
+            setTimeout(() => {
+                btn.innerHTML = '<span>Subscribed!</span> <i class="fa-solid fa-check"></i>';
+                btn.classList.remove('from-blue-600', 'to-blue-800');
+                btn.classList.add('bg-green-500'); // Simple green
+                btn.style.background = '#10B981';
+                
+                // Alert user
+                alert("You're on the list! We'll notify you when we launch.");
+                
+                // Reset form
+                e.target.reset();
+                
+                // Reset button after delay
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = ''; // Revert to gradient
+                    btn.disabled = false;
+                }, 3000);
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
+<a href="coming-soon.html" class="nav-item">Log In</a>

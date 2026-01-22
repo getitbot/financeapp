@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | Finance Buddha</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="fixed inset-0 z-0 pointer-events-none">
+        <div class="mesh-blob blob-2"></div>
+        <div class="glass-overlay"></div>
+    </div>
+
+    <header class="fixed top-0 w-full z-40">
+        <div class="absolute inset-0 bg-white/70 backdrop-blur-md border-b border-white/50" id="header-bg"></div>
+        <div class="container mx-auto px-6 h-20 flex justify-between items-center relative z-10">
+            <a href="index.html" class="flex items-center gap-3">
+                 <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
+                     <i class="fa-solid fa-sack-dollar"></i>
+                 </div>
+                 <span class="text-xl font-bold tracking-tight">Finance<span class="font-light text-gray-500">Buddha</span></span>
+            </a>
+            
+            <nav class="hidden lg:flex items-center gap-8">
+                <a href="index.html" class="nav-item font-medium text-gray-600 hover:text-blue-600 transition">Home</a>
+                <a href="about.html" class="nav-item font-medium text-gray-600 hover:text-blue-600 transition">About Us</a>
+                <a href="careers.html" class="nav-item font-medium text-gray-600 hover:text-blue-600 transition">Careers</a>
+            </nav>
+
+            <button id="open-menu-btn" class="lg:hidden text-2xl text-slate-700">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <div id="mobile-menu-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300"></div>
+    <aside id="sidebar-menu" class="fixed top-0 right-0 w-80 h-full bg-white z-50 transform translate-x-full transition-transform duration-500 shadow-2xl flex flex-col">
+        <div class="p-6 flex justify-between items-center border-b border-gray-100">
+            <span class="font-bold text-xl text-slate-900">Menu</span>
+            <button id="close-menu-btn" class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 hover:text-red-500 flex items-center justify-center">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <ul class="p-6 space-y-4" id="mobile-nav-list">
+            </ul>
+    </aside>
+
+    <main class="relative z-10 pt-32 pb-20">
+        
+        <section class="container mx-auto px-6 mb-12 text-center">
+            <h1 class="text-5xl font-bold text-slate-900 mb-4 animate-fade-in-up">Get in Touch</h1>
+            <p class="text-xl text-slate-500 animate-fade-in-up delay-100">Have a question? We'd love to hear from you.</p>
+        </section>
+
+        <section class="container mx-auto px-6 max-w-6xl">
+            <div class="grid md:grid-cols-2 gap-12">
+                
+                <div class="space-y-8 animate-fade-in-up delay-200">
+                    <div class="card-3d bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition">
+                        <div class="card-icon w-12 h-12 bg-blue-50 text-blue-600 flex items-center justify-center rounded-lg text-xl mb-4">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <h3 class="font-bold text-xl text-slate-900">Headquarters</h3>
+                        <p class="text-slate-500 mt-2 leading-relaxed">1st Floor, MPD Towers, DLF Phase 5,<br>Gurgaon, Haryana - 122002</p>
+                    </div>
+                    
+                    <div class="card-3d bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition">
+                        <div class="card-icon w-12 h-12 bg-green-50 text-green-600 flex items-center justify-center rounded-lg text-xl mb-4">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <h3 class="font-bold text-xl text-slate-900">Email Us</h3>
+                        <p class="text-slate-500 mt-2">support@financebuddha.com<br>partners@financebuddha.com</p>
+                    </div>
+
+                    <div class="card-3d bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition">
+                        <div class="card-icon w-12 h-12 bg-purple-50 text-purple-600 flex items-center justify-center rounded-lg text-xl mb-4">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+                        <h3 class="font-bold text-xl text-slate-900">Call Us</h3>
+                        <p class="text-slate-500 mt-2">+91 999 888 7777<br>Mon-Fri, 9am - 6pm</p>
+                    </div>
+                </div>
+
+                <div class="glass-strip p-8 rounded-3xl bg-brand-blue/60 backdrop-blur-xl border border-white shadow-xl animate-fade-in-up delay-300">
+                    <h2 class="text-2xl font-bold mb-6 text-slate-900">Send us a message</h2>
+                    
+                    <form id="contactForm" class="space-y-6" onsubmit="event.preventDefault(); alert('Message Sent Successfully! We will get back to you shortly.'); this.reset();">
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">First Name</label>
+                                <input required type="text" class="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white/50 focus:bg-white focus:border-blue-500 focus:outline-none transition shadow-sm" placeholder="John">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Last Name</label>
+                                <input required type="text" class="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white/50 focus:bg-white focus:border-blue-500 focus:outline-none transition shadow-sm" placeholder="Doe">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
+                            <input required type="email" class="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white/50 focus:bg-white focus:border-blue-500 focus:outline-none transition shadow-sm" placeholder="john@example.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Message</label>
+                            <textarea required rows="4" class="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white/50 focus:bg-white focus:border-blue-500 focus:outline-none transition shadow-sm" placeholder="How can we help?"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn-premium w-full cursor-pointer bg-">Send Message</button>
+                    </form>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-[#0B0F19] text-white pt-24 pb-12 rounded-t-[60px] mt-20" id="footer-container">
+        <div class="container mx-auto px-6">
+             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12" id="footer-links-container">
+                </div>
+             <div class="text-center text-gray-500 pt-8 border-t border-gray-800">
+                 &copy; 2026 Finance Buddha. All rights reserved.
+             </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

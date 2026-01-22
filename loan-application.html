@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Secure Loan Application | Finance Buddha</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- CORE VARIABLES & RESETS --- */
+        :root {
+            --primary: #2563EB;
+            --secondary: #1E293B;
+            --success: #10B981;
+            --error: #EF4444;
+            --bg-glass: rgba(255, 255, 255, 0.85);
+            --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8FAFC;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        /* --- BACKGROUND ANIMATION --- */
+        .mesh-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                        radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                        radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+            background-size: 200% 200%;
+            animation: gradient-shift 15s ease infinite;
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            z-index: -1;
+            animation: float 10s infinite ease-in-out;
+            opacity: 0.6;
+        }
+        .blob-1 { top: 10%; left: 10%; width: 300px; height: 300px; background: #60A5FA; animation-delay: 0s; }
+        .blob-2 { bottom: 20%; right: 10%; width: 250px; height: 250px; background: #A78BFA; animation-delay: -2s; }
+        .blob-3 { top: 40%; left: 40%; width: 200px; height: 200px; background: #F472B6; animation-delay: -4s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+
+        /* --- GLASSMORPHISM CARD --- */
+        .glass-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 24px;
+            box-shadow: var(--shadow-glass);
+        }
+
+        /* --- FORM ELEMENTS --- */
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem; /* Left padding for icon */
+            background: white;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            font-size: 1rem;
+            color: #1E293B;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .input-field:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .input-field:not(:placeholder-shown):valid {
+            border-color: var(--success);
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94A3B8;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+
+        .input-field:focus + .input-icon {
+            color: var(--primary);
+        }
+
+        .floating-label {
+            position: absolute;
+            left: 3rem;
+            top: 1rem;
+            color: #64748B;
+            pointer-events: none;
+            transition: 0.2s ease all;
+            background-color: transparent;
+        }
+
+        .input-field:focus ~ .floating-label,
+        .input-field:not(:placeholder-shown) ~ .floating-label {
+            top: -0.6rem;
+            left: 0.8rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--primary);
+            background-color: white;
+            padding: 0 0.4rem;
+            border-radius: 4px;
+        }
+
+        /* --- SELECTION CARDS (RADIO) --- */
+        .radio-card-input:checked + .radio-card {
+            border-color: var(--primary);
+            background-color: #EFF6FF;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .radio-card-input:checked + .radio-card .check-icon {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .check-icon {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            width: 1.25rem;
+            height: 1.25rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* --- PROGRESS BAR --- */
+        .progress-container {
+            position: fixed;
+            top: 80px; /* Below header */
+            left: 0;
+            width: 100%;
+            z-index: 30;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(5px);
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #E2E8F0;
+            width: 100%;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.4s ease;
+            border-radius: 0 4px 4px 0;
+        }
+
+        /* --- BOTTOM NAVIGATION (MOBILE STICKY) --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 1rem;
+            background: white;
+            border-top: 1px solid #E2E8F0;
+            z-index: 40;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+        }
+
+        .btn-nav {
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-next {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+            flex-grow: 1;
+            justify-content: center;
+            margin-left: 1rem;
+        }
+
+        .btn-next:active {
+            transform: scale(0.98);
+        }
+
+        .btn-back {
+            background: #F1F5F9;
+            color: #64748B;
+        }
+
+        /* --- SUCCESS ANIMATION --- */
+        .checkmark-wrapper {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+        }
+        
+        .checkmark__circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 2;
+            stroke-miterlimit: 10;
+            stroke: #10B981;
+            fill: none;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+        
+        .checkmark {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 2;
+            stroke: #fff;
+            stroke-miterlimit: 10;
+            margin: 10% auto;
+            box-shadow: inset 0px 0px 0px #10B981;
+            animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+        }
+        
+        .checkmark__check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+        }
+        
+        @keyframes stroke {
+            100% { stroke-dashoffset: 0; }
+        }
+        
+        @keyframes scale {
+            0%, 100% { transform: none; }
+            50% { transform: scale3d(1.1, 1.1, 1); }
+        }
+        
+        @keyframes fill {
+            100% { box-shadow: inset 0px 0px 0px 50px #10B981; }
+        }
+
+        /* --- STEP DISPLAY LOGIC --- */
+        .form-step {
+            display: none;
+            animation: slideIn 0.4s ease forwards;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hide Scrollbar */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="mesh-bg"></div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <header class="fixed top-0 w-full z-50">
+        <div class="absolute inset-0 bg-white/90 backdrop-blur-md border-b border-gray-200" id="header-bg"></div>
+        <div class="container mx-auto px-4 h-20 flex justify-between items-center relative z-10">
+            <a href="index.html" class="flex items-center gap-2">
+                 <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white"><i class="fa-solid fa-sack-dollar text-sm"></i></div>
+                 <span class="text-lg font-bold">Finance<span class="font-light">Buddha</span></span>
+            </a>
+            <a href="index.html" class="text-sm font-medium text-gray-500 hover:text-blue-600">Cancel</a>
+        </div>
+    </header>
+
+    <div class="progress-container">
+        <div class="container mx-auto px-4 py-2 flex justify-between text-xs font-bold text-gray-400">
+            <span id="step-label-1" class="text-blue-600">Purpose</span>
+            <span id="step-label-2">Details</span>
+            <span id="step-label-3">KYC</span>
+            <span id="step-label-4">Offer</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill" style="width: 25%;"></div>
+        </div>
+    </div>
+
+    <main class="relative z-10 pt-40 pb-32 container mx-auto px-4 max-w-2xl">
+        
+        <form id="loanWizard" onsubmit="event.preventDefault();">
+
+            <div id="step-1" class="form-step active">
+                <div class="text-center mb-8">
+                    <h1 class="text-2xl font-bold text-slate-900 mb-2">Let's get started</h1>
+                    <p class="text-slate-500 text-sm">What do you need the funds for?</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <label class="cursor-pointer group relative">
+                        <input type="radio" name="purpose" value="Personal" class="sr-only radio-card-input" checked>
+                        <div class="radio-card p-4 rounded-2xl border border-gray-200 bg-white h-32 flex flex-col items-center justify-center text-center gap-2 transition-all">
+                            <i class="fa-solid fa-plane-departure text-2xl text-blue-500 mb-1"></i>
+                            <span class="font-semibold text-sm">Travel / Wedding</span>
+                            <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                    </label>
+                    <label class="cursor-pointer group relative">
+                        <input type="radio" name="purpose" value="Business" class="sr-only radio-card-input">
+                        <div class="radio-card p-4 rounded-2xl border border-gray-200 bg-white h-32 flex flex-col items-center justify-center text-center gap-2 transition-all">
+                            <i class="fa-solid fa-briefcase text-2xl text-purple-500 mb-1"></i>
+                            <span class="font-semibold text-sm">Business</span>
+                            <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                    </label>
+                    <label class="cursor-pointer group relative">
+                        <input type="radio" name="purpose" value="Home" class="sr-only radio-card-input">
+                        <div class="radio-card p-4 rounded-2xl border border-gray-200 bg-white h-32 flex flex-col items-center justify-center text-center gap-2 transition-all">
+                            <i class="fa-solid fa-house text-2xl text-green-500 mb-1"></i>
+                            <span class="font-semibold text-sm">Home Reno</span>
+                            <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                    </label>
+                    <label class="cursor-pointer group relative">
+                        <input type="radio" name="purpose" value="Medical" class="sr-only radio-card-input">
+                        <div class="radio-card p-4 rounded-2xl border border-gray-200 bg-white h-32 flex flex-col items-center justify-center text-center gap-2 transition-all">
+                            <i class="fa-solid fa-notes-medical text-2xl text-red-500 mb-1"></i>
+                            <span class="font-semibold text-sm">Medical</span>
+                            <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="glass-card p-6 mt-8">
+                    <label class="block text-sm font-bold text-slate-700 mb-4">How much do you need?</label>
+                    <div class="flex items-end gap-2 mb-4">
+                        <span class="text-3xl font-bold text-slate-900">₹</span>
+                        <input type="number" id="amountDisplay" value="500000" class="text-4xl font-bold text-blue-600 bg-transparent outline-none w-full border-b border-gray-300 focus:border-blue-500" placeholder="0">
+                    </div>
+                    <input type="range" min="10000" max="5000000" step="10000" value="500000" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600" id="amountRange">
+                    <div class="flex justify-between text-xs text-gray-400 mt-2">
+                        <span>₹10k</span>
+                        <span>₹50L</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step-2" class="form-step">
+                <div class="text-center mb-8">
+                    <h1 class="text-2xl font-bold text-slate-900 mb-2">Tell us about yourself</h1>
+                    <p class="text-slate-500 text-sm">We need this to verify your identity.</p>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="input-group">
+                        <input type="text" class="input-field" placeholder=" " required id="fullName">
+                        <i class="fa-regular fa-user input-icon"></i>
+                        <label class="floating-label">Full Name (As per PAN)</label>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="tel" class="input-field" placeholder=" " required id="mobile" maxlength="10">
+                        <i class="fa-solid fa-phone input-icon"></i>
+                        <label class="floating-label">Mobile Number</label>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="email" class="input-field" placeholder=" " required id="email">
+                        <i class="fa-regular fa-envelope input-icon"></i>
+                        <label class="floating-label">Email Address</label>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="date" class="input-field" placeholder=" " required id="dob">
+                        <i class="fa-regular fa-calendar input-icon"></i>
+                        <label class="floating-label">Date of Birth</label>
+                    </div>
+
+                    <div class="bg-white p-1 rounded-xl border border-gray-200 flex text-sm font-semibold">
+                        <label class="flex-1 cursor-pointer">
+                            <input type="radio" name="empType" class="sr-only peer" checked>
+                            <div class="py-3 text-center rounded-lg text-gray-500 peer-checked:bg-blue-100 peer-checked:text-blue-700 transition">Salaried</div>
+                        </label>
+                        <label class="flex-1 cursor-pointer">
+                            <input type="radio" name="empType" class="sr-only peer">
+                            <div class="py-3 text-center rounded-lg text-gray-500 peer-checked:bg-blue-100 peer-checked:text-blue-700 transition">Self-Employed</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step-3" class="form-step">
+                <div class="text-center mb-8">
+                    <h1 class="text-2xl font-bold text-slate-900 mb-2">Almost there</h1>
+                    <p class="text-slate-500 text-sm">Where do you live?</p>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="input-group">
+                        <input type="text" class="input-field" placeholder=" " required id="pincode" maxlength="6">
+                        <i class="fa-solid fa-map-pin input-icon"></i>
+                        <label class="floating-label">Pincode</label>
+                    </div>
+                    
+                    <div class="input-group">
+                        <input type="text" class="input-field" placeholder=" " required id="pan">
+                        <i class="fa-solid fa-id-card input-icon"></i>
+                        <label class="floating-label">PAN Card Number</label>
+                    </div>
+
+                    <div class="glass-card p-6 text-center border-2 border-dashed border-blue-300 hover:bg-blue-50 transition cursor-pointer" onclick="document.getElementById('fileUpload').click()">
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3 text-blue-600">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-800">Upload Salary Slip (Optional)</h4>
+                        <p class="text-xs text-gray-400 mt-1">PDF, JPG up to 5MB</p>
+                        <input type="file" id="fileUpload" class="hidden" onchange="handleFileSelect(this)">
+                        <div id="fileNameDisplay" class="mt-2 text-xs text-green-600 font-bold hidden"></div>
+                    </div>
+
+                    <div class="flex items-start gap-3 mt-6">
+                        <input type="checkbox" id="termsCheck" class="mt-1 w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <label for="termsCheck" class="text-sm text-gray-500">
+                            I agree to the <a href="#" class="text-blue-600 underline">Privacy Policy</a> and authorize Finance Buddha to pull my credit report.
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step-4" class="form-step">
+                <div id="processingState" class="text-center py-20">
+                    <div class="w-20 h-20 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin mx-auto mb-6"></div>
+                    <h2 class="text-xl font-bold text-slate-900 animate-pulse">Analyzing Profile...</h2>
+                    <p class="text-slate-500 text-sm mt-2">Checking bank offers and credit score.</p>
+                </div>
+
+                <div id="successState" class="hidden text-center">
+                    <div class="checkmark-wrapper">
+                        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                            <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                            <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-3xl font-bold text-slate-900 mb-2">Pre-Approved!</h1>
+                    <p class="text-slate-500 mb-8">Your application ID is <span class="font-mono bg-yellow-100 px-2 rounded text-slate-800">FB-2026-X92</span></p>
+                    
+                    <div class="glass-card p-6 text-left mb-8">
+                        <div class="flex justify-between items-center mb-4 pb-4 border-b border-gray-100">
+                            <span class="text-gray-500 text-sm">Eligible Amount</span>
+                            <span class="text-xl font-bold text-green-600">₹ 8,50,000</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-500 text-sm">Interest Rate</span>
+                            <span class="font-bold text-slate-800">Starting @ 10.99%</span>
+                        </div>
+                    </div>
+
+                    <a href="index.html" class="w-full block bg-slate-900 text-white py-4 rounded-xl font-bold shadow-xl hover:bg-slate-800 transition">Return to Home</a>
+                </div>
+            </div>
+
+        </form>
+    </main>
+
+    <div class="bottom-nav" id="bottomNav">
+        <button class="btn-nav btn-back" id="backBtn" onclick="prevStep()">
+            <i class="fa-solid fa-arrow-left"></i> Back
+        </button>
+        <button class="btn-nav btn-next" id="nextBtn" onclick="nextStep()">
+            Next Step <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        // Elements
+        const progressBar = document.getElementById('progress-fill');
+        const nextBtn = document.getElementById('nextBtn');
+        const backBtn = document.getElementById('backBtn');
+        const bottomNav = document.getElementById('bottomNav');
+        const range = document.getElementById('amountRange');
+        const display = document.getElementById('amountDisplay');
+
+        // Initialize
+        updateUI();
+
+        // Amount Slider Logic
+        range.addEventListener('input', function() {
+            display.value = this.value;
+        });
+        display.addEventListener('input', function() {
+            range.value = this.value;
+        });
+
+        // Navigation Functions
+        function nextStep() {
+            if (validateStep(currentStep)) {
+                if (currentStep < totalSteps) {
+                    // Hide current
+                    document.getElementById(`step-${currentStep}`).classList.remove('active');
+                    document.getElementById(`step-label-${currentStep}`).classList.remove('text-blue-600');
+                    document.getElementById(`step-label-${currentStep}`).classList.add('text-green-500'); // Mark done
+                    
+                    // Increment
+                    currentStep++;
+                    
+                    // Show next
+                    document.getElementById(`step-${currentStep}`).classList.add('active');
+                    document.getElementById(`step-label-${currentStep}`).classList.add('text-blue-600');
+                    
+                    // Specific Logic for Step 4 (Submission)
+                    if (currentStep === 4) {
+                        bottomNav.style.display = 'none'; // Hide buttons
+                        runSubmissionSimulation();
+                    }
+
+                    updateUI();
+                }
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                document.getElementById(`step-${currentStep}`).classList.remove('active');
+                document.getElementById(`step-label-${currentStep}`).classList.remove('text-blue-600');
+                
+                currentStep--;
+                
+                document.getElementById(`step-${currentStep}`).classList.add('active');
+                document.getElementById(`step-label-${currentStep}`).classList.remove('text-green-500');
+                document.getElementById(`step-label-${currentStep}`).classList.add('text-blue-600');
+                
+                updateUI();
+            }
+        }
+
+        function updateUI() {
+            // Update Progress Bar
+            const percentage = (currentStep / totalSteps) * 100;
+            progressBar.style.width = `${percentage}%`;
+
+            // Button States
+            backBtn.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
+            nextBtn.innerHTML = currentStep === 3 ? 'Submit Application <i class="fa-solid fa-paper-plane ml-2"></i>' : 'Next Step <i class="fa-solid fa-arrow-right ml-2"></i>';
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Validation Logic
+        function validateStep(step) {
+            let isValid = true;
+            const currentStepEl = document.getElementById(`step-${step}`);
+            const inputs = currentStepEl.querySelectorAll('input[required]');
+
+            inputs.forEach(input => {
+                if (!input.value) {
+                    isValid = false;
+                    input.style.borderColor = '#EF4444'; // Red border
+                    
+                    // Shake animation
+                    input.parentElement.classList.add('animate-pulse');
+                    setTimeout(() => input.parentElement.classList.remove('animate-pulse'), 500);
+                } else {
+                    input.style.borderColor = '#10B981'; // Green border
+                }
+            });
+
+            if (step === 3) {
+                const terms = document.getElementById('termsCheck');
+                if (!terms.checked) {
+                    alert("Please agree to the Terms & Privacy Policy.");
+                    return false;
+                }
+            }
+
+            if (!isValid) {
+                // Toast notification (Simulated)
+                showToast("Please fill in all required fields.");
+            }
+
+            return isValid;
+        }
+
+        // File Handler
+        function handleFileSelect(input) {
+            if (input.files && input.files[0]) {
+                const display = document.getElementById('fileNameDisplay');
+                display.innerText = `Selected: ${input.files[0].name}`;
+                display.classList.remove('hidden');
+            }
+        }
+
+        // Fake Submission Process
+        function runSubmissionSimulation() {
+            // Wait 3 seconds then show success
+            setTimeout(() => {
+                document.getElementById('processingState').classList.add('hidden');
+                document.getElementById('successState').classList.remove('hidden');
+                
+                // Trigger confetti logic could go here
+            }, 3000);
+        }
+
+        // Toast Helper
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-24 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-6 py-3 rounded-full shadow-xl z-50 text-sm font-bold transition-opacity duration-300';
+            toast.innerText = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Input Formatting (Mobile Number)
+        document.getElementById('mobile').addEventListener('input', function (e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+        
+        // Input Formatting (PAN - uppercase)
+        document.getElementById('pan').addEventListener('input', function (e) {
+            this.value = this.value.toUpperCase();
+        });
+
+    </script>
+</body>
+</html>

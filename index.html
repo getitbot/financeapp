@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Buddha | The Future of Lending</title>
+    <meta name="description" content="Premium financial services for the modern era. Instant personal and business loans with zero friction.">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            deep: '#0B0F19',
+                            primary: '#2563EB',
+                            accent: '#F59E0B',
+                            surface: '#F8FAFC'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="antialiased text-slate-800 bg-slate-50 overflow-x-hidden selection:bg-blue-500 selection:text-white">
+
+    <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div class="mesh-blob blob-1"></div>
+        <div class="mesh-blob blob-2"></div>
+        <div class="mesh-blob blob-3"></div>
+        <div class="glass-overlay"></div>
+    </div>
+
+    <div id="mobile-menu-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300"></div>
+    
+    <aside id="sidebar-menu" class="fixed top-0 right-0 w-80 h-full bg-white z-50 transform translate-x-full transition-transform duration-500 shadow-2xl flex flex-col">
+        <div class="p-6 flex justify-between items-center border-b border-gray-100">
+            <span class="font-bold text-xl tracking-tight text-slate-900">Menu</span>
+            <button id="close-menu-btn" class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 hover:bg-red-50 hover:text-red-500 transition flex items-center justify-center">
+                <i class="fa-solid fa-times text-lg"></i>
+            </button>
+        </div>
+        <nav class="flex-1 overflow-y-auto p-6">
+            <ul class="space-y-2" id="mobile-nav-list">
+                </ul>
+        </nav>
+        <div class="p-6 bg-gray-50 border-t border-gray-100">
+            <a href="contact.html" class="btn-premium w-full text-center block">Get Started</a>
+        </div>
+    </aside>
+
+    <header class="fixed top-0 w-full z-40 transition-all duration-300" id="main-header">
+        <div class="absolute inset-0 bg-white/70 backdrop-blur-md border-b border-white/50 shadow-sm transition-all duration-300" id="header-bg"></div>
+        
+        <div class="container mx-auto px-6 h-20 flex justify-between items-center relative z-10">
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-blue-400 flex items-center justify-center text-white shadow-lg shadow-blue-500/30 group-hover:scale-105 transition-transform duration-300">
+                    <i class="fa-solid fa-sack-dollar text-xl"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold text-slate-900 tracking-tight leading-none group-hover:text-blue-600 transition-colors">Finance<span class="font-light text-slate-500">Buddha</span></span>
+                </div>
+            </a>
+
+            <nav class="hidden lg:flex items-center gap-8">
+                <a href="loan-application.html" class="nav-item">Personal Loan</a>
+                <a href="loan-application.html" class="nav-item">Business Loan</a>
+                <a href="about.html" class="nav-item">About Us</a>
+                <a href="careers.html" class="nav-item">Careers</a>
+                <div class="h-6 w-px bg-gray-300 mx-2"></div>
+                <a href="coming-soon.html" class="nav-item">Log In</a>
+                <a href="loan-application.html" class="btn-premium">Apply Now</a>
+            </nav>
+
+            <button id="open-menu-btn" class="lg:hidden text-2xl text-slate-700 hover:text-blue-600 transition">
+                <i class="fa-solid fa-bars-staggered"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="relative z-10 pt-32 pb-20">
+
+        <section class="container mx-auto px-6 mb-24">
+            <div class="max-w-5xl mx-auto text-center flex flex-col items-center">
+                
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-sm font-semibold mb-8 animate-fade-in-up">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                    </span>
+                    #1 Trusted Lending Platform
+                </div>
+
+                <h1 class="text-5xl md:text-7xl font-bold text-slate-900 mb-8 leading-tight tracking-tight animate-fade-in-up delay-100">
+                    India's top destination for <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500 relative">
+                        personal loans
+                        <svg class="absolute w-full h-4 -bottom-2 left-0 text-yellow-400/60" viewBox="0 0 100 10" preserveAspectRatio="none">
+                            <path d="M0 5 Q 50 10 100 5" stroke="currentColor" stroke-width="3" fill="none" />
+                        </svg>
+                    </span>
+                    and business loans
+                </h1>
+
+                <p class="text-xl text-slate-500 mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in-up delay-200">
+                    Helping you invest in India's moment. Low interest rates, minimal documentation, and quick disbursals.
+                </p>
+
+                <div class="w-full max-w-md flex flex-col items-center gap-4 mb-12 animate-fade-in-up delay-300">
+                    <button class="btn-premium-large w-full justify-center group" onclick="window.location.href='loan-application.html'">
+                        <span>Apply for Personal Loan</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                    <p class="text-sm text-gray-400">Benefits from top Banks and NBFCs</p>
+                </div>
+
+                <div class="glass-strip w-full max-w-3xl animate-fade-in-up delay-400">
+                    <div class="marquee-mask">
+                        <div class="marquee-content" id="hero-bank-logos">
+                            </div>
+                    </div>
+                    <p class="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mt-4">*Instant Bank Quotes Available</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="container mx-auto px-6 mb-32 text-center">
+            <h2 class="section-title">Trust with Confidence</h2>
+            <div class="w-16 h-1 bg-yellow-400 mx-auto rounded mb-12"></div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="metrics-grid">
+                </div>
+        </section>
+
+        <section class="container mx-auto px-6 mb-32 text-center">
+            <h2 class="section-title">Partnered with leading banks</h2>
+            <p class="section-subtitle mb-12">We integrate with the largest financial institutions to bring you the best rates.</p>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-8 justify-items-center" id="partners-grid">
+                </div>
+        </section>
+
+        <section class="mb-32 relative py-20 bg-slate-900 overflow-hidden text-white">
+            <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+            <div class="container mx-auto px-6 relative z-10 text-center">
+                <h2 class="text-3xl font-bold mb-2">Real Stories From Real Customers</h2>
+                <div class="w-16 h-1 bg-yellow-400 mx-auto rounded mb-10"></div>
+                
+                <div class="max-w-4xl mx-auto overflow-hidden">
+                    <div class="flex transition-transform duration-700 ease-out" id="testimonial-track">
+                        </div>
+                </div>
+
+                <div class="flex justify-center gap-4 mt-10">
+                    <button id="prev-testim" class="slider-btn"><i class="fa-solid fa-arrow-left"></i></button>
+                    <button id="next-testim" class="slider-btn"><i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <section class="container mx-auto px-6 mb-24">
+            <div class="text-center mb-12">
+                <h2 class="section-title">Financial Insights</h2>
+                <div class="w-16 h-1 bg-yellow-400 mx-auto rounded mb-4"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="blog-grid">
+                </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-brand-deep text-white pt-24 pb-12 relative overflow-hidden rounded-t-[60px]" id="footer-container">
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-20">
+                <div class="lg:col-span-2">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center">
+                            <i class="fa-solid fa-sack-dollar text-xl"></i>
+                        </div>
+                        <span class="text-2xl font-bold">Finance<span class="font-light text-gray-400">Buddha</span></span>
+                    </div>
+                    <p class="text-gray-400 leading-relaxed mb-8 max-w-sm">
+                        Empowering millions of Indians with transparent, fast, and secure financial products since 2012.
+                    </p>
+                </div>
+                <div class="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-8" id="footer-links-container">
+                    </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+                <p>&copy; 2026 Finance Buddha. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
